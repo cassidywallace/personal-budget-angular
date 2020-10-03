@@ -9,21 +9,6 @@ console.log('the type of budget is', typeof budget)
 
 console.log(budget);
 
-    /*myBudget:[
-    {
-        title: 'Eat out',
-        budget: 30
-    },
-    {
-        title: 'Grocery',
-        budget: 90
-    },
-    {
-        title: 'Rent',
-        budget: 375
-    }
-]
-};*/
 app.get('/hello', (req, res) => {
     res.send('Hello World!');
 });
