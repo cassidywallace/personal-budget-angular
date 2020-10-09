@@ -1,53 +1,50 @@
-import { AfterViewInit, Component} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
+import { DataService } from '../../app/data.service';
 
 @Component({
   selector: 'pb-homepage',
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss']
+  styleUrls: ['./homepage.component.scss'],
 })
-export class HomepageComponent implements AfterViewInit {
+export class HomepageComponent implements OnInit {
+  constructor(private dataService: DataService) {}
 
-  public dataSource = {
-    datasets: [
-        {
-            data: [],
+  createChart(data) {
+    var labels = [];
+    var _data = [];
+    for (var i = 0; i < data.myBudget.length; i++) {
+      labels[i] = data.myBudget[i].title;
+      _data[i] = data.myBudget[i].budget;
+    }
+    var ctx = document.getElementById('myChart');
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: _data,
             backgroundColor: [
-            '#ffcd56',
-            '#ff6384',
-            '#36a2eb',
-            '#fd6b19',
-            '#267834',
-            '#A659AF'
+              '#ffcd56',
+              '#ff6384',
+              '#36a2eb',
+              '#fd6b19',
+              '#58508d',
+              '#bc5090',
+              '#ff6361',
+              '#003f5c',
+              '#b4c6f0',
             ],
-        }
-    ],
-    labels: []
-};
-  constructor(private http: HttpClient) { }
-
-  ngAfterViewInit(): void {
-    this.http.get('http://localhost:3000/budget')
-    .subscribe((res: any) => {
-      // tslint:disable-next-line: no-var-keyword
-      for(var i = 0; i < res.myBudget.length; i++) {
-        this.dataSource.datasets[0].data[i] = res.myBudget[i].budget;
-        this.dataSource.labels[i] = res.myBudget[i].title;
-        this.createChart();
-      }
+          },
+        ],
+      },
     });
   }
 
-   // tslint:disable-next-line: typedef
-   createChart() {
-      // tslint:disable-next-line: no-var-keyword, prefer-const
-      var ctx = document.getElementById('myChart');
-      // tslint:disable-next-line: no-var-keyword
-      var myPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: this.dataSource
-      });
-      }
-
+  ngOnInit(): void {
+    this.dataService.getChartData().subscribe((data: any) => {
+      this.createChart(data);
+    });
+  }
 }
